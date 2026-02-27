@@ -82,12 +82,12 @@ export default function CoursePage() {
 
         // Organizar por módulo usando as aulas do curso e adicionando progresso
         const lessonsMap = new Map<string, LessonWithProgress[]>();
-        courseData.modules.forEach((module) => {
-          const moduleLessons: LessonWithProgress[] = module.lessons.map((lesson) => ({
+        courseData.modules.forEach((courseModule) => {
+          const moduleLessons: LessonWithProgress[] = courseModule.lessons.map((lesson) => ({
             ...lesson,
             completed: progressMap.get(lesson.id) || false,
           }));
-          lessonsMap.set(module.id, moduleLessons);
+          lessonsMap.set(courseModule.id, moduleLessons);
         });
         setLessonsWithProgress(lessonsMap);
 
@@ -97,10 +97,10 @@ export default function CoursePage() {
 
         // Se há parâmetro de módulo na URL, abrir esse módulo
         if (moduleParam) {
-          const module = courseData.modules.find((m) => m.id === moduleParam);
-          if (module && module.lessons.length > 0) {
+          const courseModule = courseData.modules.find((m) => m.id === moduleParam);
+          if (courseModule && courseModule.lessons.length > 0) {
             setSelectedModule(moduleParam);
-            setCurrentLesson(module.lessons[0].id);
+            setCurrentLesson(courseModule.lessons[0].id);
           }
         }
       }
@@ -114,10 +114,10 @@ export default function CoursePage() {
   const handleModuleClick = (moduleId: string) => {
     if (!course) return;
 
-    const module = course.modules.find((m) => m.id === moduleId);
-    if (module && module.lessons.length > 0) {
+    const courseModule = course.modules.find((m) => m.id === moduleId);
+    if (courseModule && courseModule.lessons.length > 0) {
       setSelectedModule(moduleId);
-      setCurrentLesson(module.lessons[0].id);
+      setCurrentLesson(courseModule.lessons[0].id);
       // Atualizar URL sem recarregar
       router.push(`/course/${courseId}?module=${moduleId}`, { scroll: false });
     }
@@ -133,10 +133,10 @@ export default function CoursePage() {
   const getCurrentLessonData = () => {
     if (!course || !currentLesson) return null;
 
-    for (const module of course.modules) {
-      const lesson = module.lessons.find((l) => l.id === currentLesson);
+    for (const courseModule of course.modules) {
+      const lesson = courseModule.lessons.find((l) => l.id === currentLesson);
       if (lesson) {
-        const progress = lessonsWithProgress.get(module.id);
+        const progress = lessonsWithProgress.get(courseModule.id);
         const lessonWithProgress = progress?.find((l) => l.id === lesson.id);
         return {
           ...lesson,
@@ -150,21 +150,21 @@ export default function CoursePage() {
   const getNextLesson = () => {
     if (!course || !currentLesson || !selectedModule) return null;
 
-    const module = course.modules.find((m) => m.id === selectedModule);
-    if (!module) return null;
+    const courseModule = course.modules.find((m) => m.id === selectedModule);
+    if (!courseModule) return null;
 
-    const currentIndex = module.lessons.findIndex((l) => l.id === currentLesson);
-    return module.lessons[currentIndex + 1] || null;
+    const currentIndex = courseModule.lessons.findIndex((l) => l.id === currentLesson);
+    return courseModule.lessons[currentIndex + 1] || null;
   };
 
   const getPreviousLesson = () => {
     if (!course || !currentLesson || !selectedModule) return null;
 
-    const module = course.modules.find((m) => m.id === selectedModule);
-    if (!module) return null;
+    const courseModule = course.modules.find((m) => m.id === selectedModule);
+    if (!courseModule) return null;
 
-    const currentIndex = module.lessons.findIndex((l) => l.id === currentLesson);
-    return module.lessons[currentIndex - 1] || null;
+    const currentIndex = courseModule.lessons.findIndex((l) => l.id === currentLesson);
+    return courseModule.lessons[currentIndex - 1] || null;
   };
 
   if (loading) {

@@ -131,8 +131,8 @@ export default function InstructorPage() {
     setSaving(true);
     try {
       // Buscar módulo completo para contar aulas
-      const module = currentCourse?.modules?.find((m: any) => m.id === moduleId);
-      const lessonCount = module?.lessons?.length || 0;
+      const targetModule = currentCourse?.modules?.find((m: any) => m.id === moduleId);
+      const lessonCount = targetModule?.lessons?.length || 0;
 
       const lesson = await createLesson({
         module_id: moduleId,
