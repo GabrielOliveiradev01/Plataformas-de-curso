@@ -108,13 +108,13 @@ export default function InstructorPage() {
       // Contar módulos existentes para order_index
       const moduleCount = currentCourse.modules?.length || 0;
 
-      const module = await createModule({
+      const createdModule = await createModule({
         course_id: currentCourse.id,
         title: moduleForm.title,
         order_index: moduleCount,
       });
 
-      if (module) {
+      if (createdModule) {
         setModuleForm({ title: "" });
         setIsCreatingModule(false);
         await loadUserAndCourses();
